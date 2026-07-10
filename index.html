@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Trial signup page — sidebar variants</title>
+<style>
+  :root {
+    --ld-blue: #405bff;
+    --ld-blue-light: #7084ff;
+    --ld-dark: #191919;
+    --ld-gray: #646464;
+    --ld-border: #d8d8dc;
+    --ld-green: #4caf7d;
+    --aside-bg: #0b0b10;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background: #e9eaee; }
+
+  .switcher {
+    position: sticky; top: 0; z-index: 50;
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    background: #1c1c22; color: #fff; padding: 10px 20px;
+    font-size: 13px;
+  }
+  .switcher span { color: #9a9aa6; margin-right: 8px; }
+  .switcher button {
+    font-size: 13px; padding: 6px 14px; border-radius: 6px; cursor: pointer;
+    border: 1px solid #3a3a44; background: transparent; color: #cfcfd8;
+  }
+  .switcher button:hover { background: #2a2a33; }
+  .switcher button.active { background: var(--ld-blue); border-color: var(--ld-blue); color: #fff; font-weight: 600; }
+
+  .page {
+    display: grid; grid-template-columns: minmax(0, 1fr) minmax(440px, 520px);
+    min-height: calc(100vh - 45px); background: #fff;
+  }
+
+  /* ---------- Left column (real page, unchanged across variants) ---------- */
+  .main { display: flex; align-items: center; justify-content: center; padding: 40px 64px; }
+  .main-content { width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 22px; }
+
+  .wordmark { display: flex; align-items: center; gap: 9px; margin-bottom: 4px; }
+  .wordmark .mark {
+    width: 30px; height: 30px; border-radius: 8px; background: var(--ld-dark);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .wordmark .mark span { display: block; width: 16px; height: 8px; border-radius: 8px; background: #fff; position: relative; }
+  .wordmark .mark span::after { content: ""; position: absolute; right: 1px; top: 1px; width: 6px; height: 6px; border-radius: 50%; background: var(--ld-blue); }
+  .wordmark b { font-size: 19px; font-weight: 700; letter-spacing: -0.02em; color: var(--ld-dark); }
+
+  h1 { font-size: 26px; font-weight: 600; color: var(--ld-dark); }
+  .sub { font-size: 15px; color: var(--ld-gray); line-height: 1.55; margin-top: 8px; }
+  .sub a { color: var(--ld-blue); text-decoration: none; }
+
+  .tabs { display: flex; border-bottom: 1px solid var(--ld-border); }
+  .tabs div { padding: 9px 16px; font-size: 14px; color: var(--ld-gray); cursor: default; }
+  .tabs div.on { color: var(--ld-dark); font-weight: 600; border-bottom: 2px solid var(--ld-blue); margin-bottom: -1px; }
+
+  .oauth { display: flex; gap: 12px; }
+  .oauth a {
+    flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px;
+    height: 40px; border-radius: 6px; font-size: 14px; font-weight: 500; text-decoration: none;
+  }
+  .oauth .google { border: 1px solid var(--ld-border); color: #3c4043; background: #fff; }
+  .oauth .github { background: #24292f; color: #fff; }
+  .g-logo { width: 18px; height: 18px; }
+  .gh-logo { width: 18px; height: 18px; fill: #fff; }
+
+  .divider { display: flex; align-items: center; gap: 12px; color: var(--ld-gray); font-size: 13px; }
+  .divider::before, .divider::after { content: ""; flex: 1; height: 1px; background: var(--ld-border); }
+
+  .form { display: flex; flex-direction: column; gap: 14px; }
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .field label { display: block; font-size: 13px; font-weight: 600; color: var(--ld-dark); margin-bottom: 5px; }
+  .field label em { color: #c8102e; font-style: normal; }
+  .field input {
+    width: 100%; height: 38px; border: 1px solid var(--ld-border); border-radius: 6px;
+    padding: 0 10px; font-size: 14px; background: #fff;
+  }
+  .submit-row { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--ld-gray); margin-top: 4px; }
+  .submit {
+    background: var(--ld-blue); color: #fff; border: none; border-radius: 6px;
+    height: 42px; padding: 0 20px; font-size: 15px; font-weight: 600; cursor: pointer;
+  }
+  .demo-link { color: var(--ld-blue); text-decoration: none; font-size: 14px; }
+
+  .disclaimer { display: flex; flex-direction: column; gap: 10px; font-size: 12.5px; color: var(--ld-gray); line-height: 1.5; }
+  .disclaimer a { color: var(--ld-blue); text-decoration: none; }
+
+  /* ---------- Right aside (the variant) ---------- */
+  .aside {
+    position: relative; overflow: hidden; background: var(--aside-bg); color: #f0f2f8;
+    display: flex; flex-direction: column; justify-content: center; padding: 56px 48px;
+  }
+  .aside .glow {
+    position: absolute; right: -240px; bottom: -220px; width: 560px; height: 540px;
+    border-radius: 50%; background: radial-gradient(circle, rgba(64,91,255,0.55), rgba(64,91,255,0) 70%);
+    pointer-events: none;
+  }
+  .aside .glow.purple { background: radial-gradient(circle, rgba(90,50,160,0.5), rgba(90,50,160,0) 70%); right: auto; bottom: auto; left: 50%; top: 34%; transform: translate(-50%,-50%); }
+  .star { position: absolute; border-radius: 50%; background: #f0f2f8; opacity: 0.5; }
+  .aside-inner { position: relative; z-index: 1; max-width: 380px; margin: 0 auto; width: 100%; }
+
+  .variant { display: none; }
+  .variant.show { display: block; }
+
+  /* Current: Toggle */
+  .mascot-shell { position: relative; width: 210px; height: 210px; margin: 0 auto 26px; }
+  .orbit { position: absolute; inset: 0; border: 1px solid rgba(255,255,255,0.18); border-radius: 50%; animation: spin 26s linear infinite; }
+  .orbit.inner { inset: 26px; animation-duration: 18s; animation-direction: reverse; }
+  .orbit i { position: absolute; width: 5px; height: 5px; border-radius: 50%; background: #aab6ff; top: -3px; left: 50%; }
+  .mascot {
+    position: absolute; inset: 48px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #5a6cff, #2b3aa8);
+    display: flex; align-items: center; justify-content: center;
+    animation: floaty 5s ease-in-out infinite;
+  }
+  .mascot .toggle-glyph { width: 62px; height: 32px; border-radius: 20px; background: #fff; position: relative; }
+  .mascot .toggle-glyph::after { content: ""; position: absolute; right: 4px; top: 4px; width: 24px; height: 24px; border-radius: 50%; background: var(--ld-dark); }
+  .bubble {
+    position: absolute; top: -4px; right: -22px; background: #fff; color: var(--ld-dark);
+    font-size: 12px; font-weight: 600; padding: 6px 12px; border-radius: 16px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .bubble i { width: 7px; height: 7px; border-radius: 50%; background: var(--ld-green); }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes floaty { 0%,100% { transform: translateY(0);} 50% { transform: translateY(-10px);} }
+
+  .kicker { font-size: 12px; font-weight: 700; letter-spacing: 0.14em; color: #aab6ff; margin-bottom: 8px; }
+  .hero-title { font-size: 27px; font-weight: 700; line-height: 1.2; }
+  .hero-sub { font-size: 15px; color: #b9bdcc; margin-top: 10px; }
+  .chips { list-style: none; margin: 22px 0; display: flex; flex-direction: column; gap: 10px; }
+  .chips li span {
+    display: inline-block; font-size: 13.5px; padding: 9px 14px; border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.22); background: rgba(255,255,255,0.06); color: #e6e8f2;
+  }
+  .aside-cta {
+    display: inline-block; background: #fff; color: var(--ld-dark); font-size: 15px; font-weight: 600;
+    padding: 12px 26px; border-radius: 8px; text-decoration: none;
+  }
+  .aside-cta.blue { background: var(--ld-blue); color: #fff; }
+
+  /* Shared option elements (dark styling) */
+  .d-badge {
+    display: inline-block; background: rgba(64,91,255,0.25); border: 1px solid rgba(112,132,255,0.5);
+    color: #c3cdff; font-size: 12.5px; font-weight: 600; padding: 5px 14px; border-radius: 20px; margin-bottom: 16px;
+  }
+  .d-head { font-size: 25px; font-weight: 700; line-height: 1.25; margin-bottom: 8px; }
+  .d-sub { font-size: 14.5px; color: #b9bdcc; line-height: 1.55; margin-bottom: 20px; }
+  .d-check { list-style: none; margin-bottom: 22px; }
+  .d-check li { display: flex; gap: 12px; align-items: flex-start; padding: 8px 0; font-size: 15px; }
+  .d-check .tick {
+    width: 21px; height: 21px; border-radius: 50%; flex-shrink: 0; margin-top: 1px;
+    background: rgba(76,175,125,0.22); color: #7fe0ab; font-size: 12px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .d-check small { display: block; font-size: 12.5px; color: #9ba0b2; margin-top: 1px; font-weight: 400; }
+  .d-ladder { border-top: 1px solid rgba(255,255,255,0.16); padding-top: 16px; display: flex; gap: 12px; font-size: 14px; color: #b9bdcc; line-height: 1.6; }
+  .d-ladder b { color: #fff; }
+  .d-ladder .arr { color: #aab6ff; font-size: 19px; line-height: 1.1; }
+  .logo-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 22px; }
+  .logo-grid div {
+    height: 50px; display: flex; align-items: center; justify-content: center;
+    border: 1px solid rgba(255,255,255,0.18); border-radius: 8px; background: rgba(255,255,255,0.05);
+    font-size: 12.5px; font-weight: 600; letter-spacing: 0.04em; color: #cdd1de;
+  }
+  blockquote { font-size: 15.5px; font-style: italic; line-height: 1.6; margin-bottom: 14px; color: #e6e8f2; }
+  .attrib { display: flex; align-items: center; gap: 10px; margin-bottom: 22px; }
+  .attrib .av { width: 36px; height: 36px; border-radius: 50%; background: rgba(64,91,255,0.35); color: #c3cdff; font-size: 13px; font-weight: 600; display: flex; align-items: center; justify-content: center; }
+  .attrib p { font-size: 13px; color: #9ba0b2; line-height: 1.4; }
+  .attrib b { color: #fff; }
+  .steps { margin-bottom: 20px; }
+  .stp { display: flex; gap: 14px; padding: 9px 0; position: relative; }
+  .stp:not(:last-child)::before { content: ""; position: absolute; left: 13px; top: 40px; bottom: -4px; width: 2px; background: rgba(255,255,255,0.14); }
+  .stp .n { width: 27px; height: 27px; border-radius: 50%; background: rgba(64,91,255,0.3); color: #c3cdff; font-size: 13px; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0; z-index: 1; }
+  .stp p { font-size: 14.5px; font-weight: 500; line-height: 1.4; }
+  .stp span { font-size: 12.5px; color: #9ba0b2; font-weight: 400; }
+  .trust { border-top: 1px solid rgba(255,255,255,0.16); padding-top: 14px; }
+  .trust div { display: flex; align-items: center; gap: 9px; font-size: 13px; color: #b9bdcc; padding: 4px 0; }
+  .trust svg { flex-shrink: 0; stroke: #9ba0b2; }
+  .free-note { margin-top: 20px; padding: 13px 15px; border-radius: 8px; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.14); font-size: 13px; color: #b9bdcc; line-height: 1.5; }
+  .free-note b { color: #fff; }
+
+  .caption { position: relative; z-index: 1; text-align: center; margin-top: 30px; font-size: 12px; color: #7c8093; }
+
+  @media (max-width: 980px) { .page { grid-template-columns: 1fr; } .aside { min-height: 560px; } }
+</style>
+</head>
+<body>
+
+<div class="switcher">
+  <span>Sidebar variant:</span>
+  <button data-v="current" class="active">Current (Toggle)</button>
+  <button data-v="a">A · Social proof</button>
+  <button data-v="b">B · Value ladder</button>
+  <button data-v="c">C · Time to value</button>
+  <button data-v="d">D · Hybrid</button>
+</div>
+
+<div class="page">
+
+  <main class="main">
+    <div class="main-content">
+      <div class="wordmark"><div class="mark"><span></span></div><b>LaunchDarkly</b></div>
+
+      <hgroup>
+        <h1>Create your free account</h1>
+        <p class="sub">Start with 14 days of full access, then continue on a free <a href="#">Developer account</a> with limits. No credit card required.</p>
+      </hgroup>
+
+      <div class="tabs"><div class="on">Start 14-Day Trial</div><div>Enterprise Demo</div></div>
+
+      <div class="oauth">
+        <a class="google" href="#">
+          <svg class="g-logo" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.5l6.7-6.7C35.6 2.5 30.2 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.8 6C12.3 13.2 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4.1 7.1-10.1 7.1-17.5z"/><path fill="#FBBC05" d="M10.4 28.7c-.5-1.5-.8-3-.8-4.7s.3-3.2.8-4.7l-7.8-6C.9 16.5 0 20.1 0 24s.9 7.5 2.6 10.7l7.8-6z"/><path fill="#34A853" d="M24 48c6.2 0 11.4-2 15.2-5.6l-7.5-5.8c-2 1.4-4.7 2.2-7.7 2.2-6.3 0-11.7-3.7-13.6-9.1l-7.8 6C6.5 42.6 14.6 48 24 48z"/></svg>
+          Sign up with Google
+        </a>
+        <a class="github" href="#">
+          <svg class="gh-logo" viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+          Sign up with GitHub
+        </a>
+      </div>
+
+      <div class="divider">or</div>
+
+      <div class="form">
+        <div class="row2">
+          <div class="field"><label>First name <em>*</em></label><input type="text"></div>
+          <div class="field"><label>Last name <em>*</em></label><input type="text"></div>
+        </div>
+        <div class="field"><label>Email <em>*</em></label><input type="email"></div>
+        <div class="field"><label>Password <em>*</em></label><input type="password"></div>
+        <div class="submit-row">
+          <button class="submit">Start my 14-day trial now</button>
+        </div>
+      </div>
+
+      <div class="disclaimer">
+        <small>Already have an account? <a href="#">Sign in</a></small>
+        <small>By using LaunchDarkly, you agree to the LaunchDarkly <a href="#">Terms</a> and <a href="#">Privacy Policies</a>.</small>
+      </div>
+    </div>
+  </main>
+
+  <aside class="aside" id="aside">
+    <span class="star" style="top:8%;left:12%;width:2px;height:2px;"></span>
+    <span class="star" style="top:16%;left:78%;width:3px;height:3px;"></span>
+    <span class="star" style="top:30%;left:40%;width:2px;height:2px;"></span>
+    <span class="star" style="top:52%;left:88%;width:2px;height:2px;"></span>
+    <span class="star" style="top:66%;left:18%;width:3px;height:3px;"></span>
+    <span class="star" style="top:80%;left:60%;width:2px;height:2px;"></span>
+    <span class="star" style="top:88%;left:30%;width:2px;height:2px;"></span>
+    <span class="star" style="top:40%;left:6%;width:2px;height:2px;"></span>
+    <div class="glow" id="glow"></div>
+
+    <div class="aside-inner">
+
+      <div class="variant show" data-v="current">
+        <div class="mascot-shell">
+          <div class="orbit"><i></i></div>
+          <div class="orbit inner"><i></i></div>
+          <div class="mascot"><div class="toggle-glyph"></div></div>
+          <div class="bubble"><i></i>Ready to help</div>
+        </div>
+        <p class="kicker">MEET TOGGLE:</p>
+        <p class="hero-title">Your personal<br>LaunchDarkly expert</p>
+        <p class="hero-sub">Ask anything about LaunchDarkly.</p>
+        <ul class="chips">
+          <li><span>Does LaunchDarkly work with my team and stack?</span></li>
+          <li><span>How does it help me ship AI features safely?</span></li>
+          <li><span>Is there a demo I can watch?</span></li>
+        </ul>
+        <a class="aside-cta" href="#">Talk to Toggle</a>
+      </div>
+
+      <div class="variant" data-v="a">
+        <p class="kicker">TRUSTED BY BUILDERS</p>
+        <p class="d-head">The most generous free tier on the market</p>
+        <p class="d-sub">Startups ship on LaunchDarkly from day one — and stay as they scale.</p>
+        <div class="logo-grid">
+          <div>RILLET</div><div>POKA</div><div>HIREOLOGY</div>
+          <div>SPOTNANA</div><div>KOJO</div><div>+ 1,000s</div>
+        </div>
+        <blockquote>"We shipped our first guarded release the same afternoon we signed up. No sales call, no procurement — it just worked."</blockquote>
+        <div class="attrib"><div class="av">JK</div><p><b>Jamie K.</b><br>CTO, seed-stage startup</p></div>
+        <div class="free-note"><b>Free forever for developers.</b> Unlimited flags, 1,000 monthly contexts, no credit card.</div>
+      </div>
+
+      <div class="variant" data-v="b">
+        <span class="d-badge">14-day free trial &middot; every feature</span>
+        <p class="d-head">Try the whole platform. Keep what's free forever.</p>
+        <p class="d-sub">Your trial includes everything on our top plans:</p>
+        <ul class="d-check">
+          <li><span class="tick">&#10003;</span><div>Feature flags, unlimited<small>Unlimited seats during trial</small></div></li>
+          <li><span class="tick">&#10003;</span><div>Guarded releases<small>Auto-detect and roll back bad releases</small></div></li>
+          <li><span class="tick">&#10003;</span><div>Experimentation<small>A/B test anything behind a flag</small></div></li>
+          <li><span class="tick">&#10003;</span><div>Observability<small>Session replay, errors, and metrics built in</small></div></li>
+          <li><span class="tick">&#10003;</span><div>AgentControl<small>Runtime control for AI agents</small></div></li>
+        </ul>
+        <div class="d-ladder"><span class="arr">&#8600;</span><p>When your trial ends, you land on the <b>Developer plan — free forever.</b> No credit card, nothing turns off without warning.</p></div>
+      </div>
+
+      <div class="variant" data-v="c">
+        <p class="kicker">WHAT HAPPENS NEXT</p>
+        <p class="d-head">Your first flag is 15 minutes away</p>
+        <p class="d-sub">No sales call. No setup meeting. Here's the whole path:</p>
+        <div class="steps">
+          <div class="stp"><div class="n">1</div><div><p>Create your account</p><span>~1 minute &middot; work email or SSO</span></div></div>
+          <div class="stp"><div class="n">2</div><div><p>Install the SDK — or paste one prompt and let your coding agent do it</p><span>~10 minutes &middot; 25+ SDKs</span></div></div>
+          <div class="stp"><div class="n">3</div><div><p>Flip your first flag in production</p><span>~2 minutes &middot; instant, no deploy</span></div></div>
+        </div>
+        <div class="trust">
+          <div><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> No credit card required</div>
+          <div><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 3l7 4v5c0 4.4-3 8.4-7 9-4-.6-7-4.6-7-9V7z"/><path d="M9 12l2 2 4-4"/></svg> SOC 2 Type II &middot; GDPR &middot; ISO 27001</div>
+        </div>
+      </div>
+
+      <div class="variant" data-v="d">
+        <span class="d-badge">14-day free trial &middot; every feature</span>
+        <p class="d-head">Try the whole platform. Keep what's free forever.</p>
+        <ul class="d-check" style="margin-top:14px;">
+          <li><span class="tick">&#10003;</span><div>Feature flags, unlimited</div></li>
+          <li><span class="tick">&#10003;</span><div>Guarded releases</div></li>
+          <li><span class="tick">&#10003;</span><div>Experimentation</div></li>
+          <li><span class="tick">&#10003;</span><div>Observability</div></li>
+          <li><span class="tick">&#10003;</span><div>AgentControl</div></li>
+        </ul>
+        <div class="d-ladder" style="margin-bottom:18px;"><span class="arr">&#8600;</span><p>Trial ends &rarr; you keep the <b>Developer plan, free forever.</b></p></div>
+        <div class="trust">
+          <div><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> No credit card required</div>
+          <div><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 3l7 4v5c0 4.4-3 8.4-7 9-4-.6-7-4.6-7-9V7z"/><path d="M9 12l2 2 4-4"/></svg> SOC 2 Type II &middot; GDPR &middot; ISO 27001</div>
+          <div><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 21c-4-1.5-8-5-8-10V6l8-3 8 3v5c0 5-4 8.5-8 10z"/></svg> Cancel or downgrade anytime</div>
+        </div>
+      </div>
+
+      <p class="caption" id="caption">Current production sidebar — "Get started with Toggle" (1Mind advisor)</p>
+    </div>
+  </aside>
+
+</div>
+
+<script>
+  var captions = {
+    current: 'Current production sidebar — "Get started with Toggle" (1Mind advisor)',
+    a: 'Option A — Social proof: startup logos, testimonial, free-tier claim',
+    b: 'Option B — Value ladder: full-featured trial rolling into the free-forever Developer plan',
+    c: 'Option C — Time to value: activation promise with agent-install path and trust footer',
+    d: 'Option D — Hybrid: value ladder + risk-reversal footer (recommended single-variant bet)'
+  };
+  var buttons = document.querySelectorAll('.switcher button');
+  var variants = document.querySelectorAll('.variant');
+  var glow = document.getElementById('glow');
+  var caption = document.getElementById('caption');
+  buttons.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var v = btn.getAttribute('data-v');
+      buttons.forEach(function (b) { b.classList.toggle('active', b === btn); });
+      variants.forEach(function (el) { el.classList.toggle('show', el.getAttribute('data-v') === v); });
+      glow.className = v === 'current' ? 'glow purple' : 'glow';
+      caption.textContent = captions[v];
+    });
+  });
+  glow.className = 'glow purple';
+</script>
+
+</body>
+</html>
